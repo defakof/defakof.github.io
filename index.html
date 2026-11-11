@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rizrp's Biggest Enemy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;900&display=swap">
+<style>
+  /* Layout: full-bleed moonlit banner, then black bands of thin-bordered glass panels;
+     everything uppercase-labelled and wide-tracked, like the original holding page. */
+  :root {
+    color-scheme: dark;
+    --ink: #040605;                       /* graveyard black, biased green */
+    --ink-2: #0b0f0d;                     /* raised band */
+    --panel: rgba(0, 0, 0, 0.42);
+    --panel-solid: #0a0d0c;
+    --line: rgba(255, 255, 255, 0.18);
+    --line-soft: rgba(255, 255, 255, 0.09);
+    --fg: #ffffff;
+    --muted: rgba(255, 255, 255, 0.66);
+    --faint: rgba(255, 255, 255, 0.4);
+    --moon: #c4d2ca;                      /* moonlight grey-green */
+    --badge: #c9a24a;                     /* sheriff-badge gold: stars, bounty, rank one */
+    --loss: #b0605a;
+    --display: "Archivo", Arial, Helvetica, sans-serif;
+    --body: "Archivo", Arial, Helvetica, sans-serif;
+    --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+    --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink); color: var(--fg);
+    font-family: var(--body); font-size: 16px; line-height: 1.6;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0 0 auto; z-index: 30;
+    height: env(safe-area-inset-top, 0px); background: var(--ink);
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--moon); outline-offset: 3px; }
+
+  .wrap {
+    max-width: 1120px; margin-inline: auto;
+    padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+  }
+  .label {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted);
+  }
+  .glass {
+    border: 1px solid var(--line); background: var(--panel);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.35), inset 0 0 20px rgba(255, 255, 255, 0.03);
+  }
+
+  /* Header */
+  .top {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+    background: rgba(0, 0, 0, 0.72); border-bottom: 1px solid var(--line-soft);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+  .mark { font-family: var(--display); font-weight: 900; font-size: 15px; letter-spacing: 4px; text-transform: uppercase; text-decoration: none; line-height: 1; white-space: nowrap; }
+  .nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 22px; }
+  .nav a { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; color: var(--muted); padding-block: 4px; }
+  .nav a:hover { color: var(--fg); }
+
+  /* Hero */
+  .hero { position: relative; overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr); align-items: center; max-width: 1320px; margin-inline: auto; }
+  .hero-in { position: relative; z-index: 2; grid-column: 1; grid-row: 1; padding-block: 56px; padding-left: max(16px, env(safe-area-inset-left, 0px), calc((100vw - 1120px) / 2 + 16px - (100vw - min(100vw, 1320px)) / 2)); padding-right: 16px; }
+  .hero-art { position: relative; grid-column: 2; grid-row: 1; margin-left: -14%; aspect-ratio: 2560 / 2232; max-width: 114%; overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 34%, #000 82%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 12%, #000 74%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent 0%, #000 34%, #000 82%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 12%, #000 74%, transparent 100%);
+    mask-composite: intersect; }
+  .hero-bg { position: absolute; inset: 0; background: url("banner.jpg") center / cover no-repeat;
+    filter: grayscale(0.9) contrast(1.12) brightness(0.95); transition: filter 0.6s ease; }
+  .hero-art:hover .hero-bg { filter: grayscale(0) contrast(1) brightness(0.95); }
+  /* moonlight tint plus faint scan lines, so the collage sits in the page's palette */
+  .hero-art::after { content: ""; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,0.22) 2px 3px), linear-gradient(#b9cdc3, #b9cdc3); transition: opacity 0.6s ease; }
+  .hero-art:hover::after { opacity: 0.35; }
+  .logo {
+    font-family: var(--display); font-weight: 900; line-height: 0.95; text-transform: lowercase;
+    font-size: clamp(52px, 8.2vw, 112px); letter-spacing: 5px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.18), 0 0 25px rgba(255,255,255,0.12), 0 4px 30px rgba(0,0,0,0.8);
+  }
+  .tagline { font-size: clamp(15px, 2vw, 22px); letter-spacing: 5px; text-transform: uppercase; color: rgba(255,255,255,0.8); margin-top: 16px; }
+  .pitch { max-width: 30em; margin-top: 24px; color: rgba(255,255,255,0.86); text-shadow: 0 1px 12px #000; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-art { grid-column: 1; grid-row: 1; margin-left: 0; max-width: 100%;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%); mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+      -webkit-mask-composite: source-over; mask-composite: add; }
+    .hero-in { grid-column: 1; grid-row: 2; margin-top: -90px; padding-block: 0 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  }
+  .btn {
+    display: inline-block; cursor: pointer; text-decoration: none; color: var(--fg);
+    font: 700 15px/1 var(--body); letter-spacing: 4px; text-transform: uppercase;
+    padding: 16px 28px; border: 1px solid var(--line); background: var(--panel);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .btn:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.08); }
+  .btn.solid { background: var(--fg); color: #000; border-color: var(--fg); }
+  .btn.solid:hover { background: var(--moon); border-color: var(--moon); }
+
+  /* Tally strip */
+  .tally { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); background: var(--panel-solid); margin-top: -1px; }
+  .tally div { padding: 20px 18px; border-left: 1px solid var(--line-soft); min-width: 0; }
+  .tally div:first-child { border-left: 0; }
+  .tally b { display: block; font-family: var(--display); font-weight: 900; font-size: clamp(26px, 4vw, 40px); line-height: 1.1; font-variant-numeric: tabular-nums; }
+
+  /* Sections */
+  section { padding-block: 72px; }
+  section.band { background: var(--ink-2); border-block: 1px solid var(--line-soft); }
+  .head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px 24px; margin-bottom: 28px; }
+  h2 { font-family: var(--display); font-weight: 900; font-size: clamp(28px, 4.4vw, 44px); letter-spacing: 4px; text-transform: uppercase; line-height: 1.1; text-wrap: balance; }
+  .head p { color: var(--muted); max-width: 40em; margin-top: 8px; }
+  .sample { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--badge); border: 1px solid currentColor; padding: 3px 8px; white-space: nowrap; }
+
+  /* Leaderboard */
+  .sorts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sorts button {
+    font: 700 12px/1 var(--body); letter-spacing: 3px; text-transform: uppercase;
+    color: var(--muted); background: transparent; border: 1px solid var(--line-soft); padding: 10px 14px; cursor: pointer;
+  }
+  .sorts button:hover { color: var(--fg); border-color: var(--line); }
+  .sorts button[aria-pressed="true"] { color: #000; background: var(--fg); border-color: var(--fg); }
+  .board { border: 1px solid var(--line); background: var(--panel-solid); }
+  .row {
+    display: grid; align-items: center; gap: 6px 20px;
+    grid-template-columns: 44px minmax(170px, 1.4fr) minmax(150px, 1.8fr) 80px 92px minmax(120px, 1fr);
+    padding: 16px 20px; border-top: 1px solid var(--line-soft);
+  }
+  .row:first-child { border-top: 0; }
+  .row.cols { padding-block: 10px; background: rgba(255,255,255,0.03); }
+  .row.cols span { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--faint); }
+  .rank { font-family: var(--display); font-weight: 900; font-size: 22px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .row.lead .rank { color: var(--badge); }
+  .who { min-width: 0; }
+  .who b { display: block; font-weight: 700; font-size: 18px; letter-spacing: 1px; overflow-wrap: anywhere; }
+  .who small { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); }
+  .kd { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .kd .track { flex: 1; height: 8px; background: rgba(255,255,255,0.08); min-width: 40px; }
+  .kd .fill { height: 100%; background: var(--moon); }
+  .row.lead .fill { background: var(--badge); }
+  .kd b { font-family: var(--display); font-weight: 900; font-size: 20px; font-variant-numeric: tabular-nums; }
+  .num { font-variant-numeric: tabular-nums; color: var(--muted); }
+  .mmr { display: grid; gap: 1px; }
+  .mmr b { font-family: var(--display); font-weight: 900; font-size: 17px; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .stars { letter-spacing: 1px; font-size: 13px; color: rgba(255,255,255,0.16); white-space: nowrap; }
+  .stars i { font-style: normal; color: var(--badge); }
+  .iron { color: var(--muted); font-size: 14px; }
+  .foot { margin-top: 12px; font-size: 12px; color: var(--faint); letter-spacing: 1px; }
+
+  /* Code */
+  .code { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); }
+  .code article { padding: 26px 24px; border-left: 1px solid var(--line-soft); border-top: 1px solid var(--line-soft); margin: -1px 0 0 -1px; min-width: 0; }
+  .code h3 { font-size: 15px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+  .code p { color: var(--muted); font-size: 15px; }
+
+  /* Match log */
+  .scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--panel-solid); }
+  table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  th, td { text-align: left; padding: 14px 18px; border-top: 1px solid var(--line-soft); white-space: nowrap; }
+  th { font-size: 11px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--faint); border-top: 0; background: rgba(255,255,255,0.03); }
+  td { font-variant-numeric: tabular-nums; color: var(--muted); }
+  td:first-child { color: var(--fg); font-weight: 600; }
+  .res { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; padding: 4px 9px; border: 1px solid currentColor; }
+  .res.won { color: var(--badge); }
+  .res.ext { color: var(--moon); }
+  .res.dead { color: var(--loss); }
+  td.r, th.r { text-align: right; }
+
+  /* Join */
+  .join { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 40px; align-items: start; }
+  .reqs { list-style: none; display: grid; gap: 0; border-top: 1px solid var(--line-soft); margin-top: 24px; }
+  .reqs li { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line-soft); }
+  .reqs span { color: var(--muted); }
+  .reqs b { text-align: right; }
+  form { padding: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .f { display: grid; gap: 7px; min-width: 0; }
+  .f.wide { grid-column: 1 / -1; }
+  .f label { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); }
+  input, select, textarea {
+    width: 100%; font: 400 16px/1.4 var(--body); color: var(--fg);
+    background: rgba(255,255,255,0.05); border: 1px solid var(--line); padding: 12px 13px; border-radius: 0;
+  }
+  select option { background: #0a0d0c; color: #fff; }
+  textarea { resize: vertical; min-height: 90px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--moon); outline-offset: 1px; }
+  form .btn { grid-column: 1 / -1; justify-self: start; }
+  .out { grid-column: 1 / -1; border: 1px solid var(--line-soft); padding: 16px; display: grid; gap: 12px; }
+  .out pre { font: 14px/1.6 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--moon); }
+  .out p { font-size: 14px; color: var(--muted); }
+  .err { grid-column: 1 / -1; color: var(--loss); font-size: 14px; }
+
+  footer { border-top: 1px solid var(--line-soft); padding-block: 28px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+  footer small { font-size: 11px; letter-spacing: 1px; text-transform: none; max-width: 46em; }
+
+  @media (max-width: 860px) {
+    .row { grid-template-columns: 34px minmax(0, 1fr) 84px; }
+    .row.cols { display: none; }
+    .row .kd { grid-column: 2 / -1; grid-row: 2; }
+    .row .hrs, .row .iron { display: none; }
+    .row .mmr { justify-self: end; text-align: right; }
+    .row .kills { grid-column: 2 / -1; grid-row: 3; font-size: 13px; }
+    .row .kills::after { content: " kills"; }
+    .code { grid-template-columns: 1fr; }
+    .join { grid-template-columns: 1fr; }
+    .tally { grid-template-columns: 1fr 1fr; }
+    .tally div:nth-child(3) { border-left: 0; }
+    .tally div:nth-child(n+3) { border-top: 1px solid var(--line-soft); }
+    section { padding-block: 52px; }
+  }
+  @media (max-width: 520px) {
+    .logo { letter-spacing: 3px; }
+    .tagline { letter-spacing: 3px; }
+    .btn { letter-spacing: 3px; padding: 14px 20px; }
+    form { grid-template-columns: 1fr; padding: 18px; }
+    .top .wrap { flex-wrap: wrap; gap: 6px 16px; padding-block: 9px; }
+    .nav { flex-wrap: nowrap; justify-content: flex-start; width: 100%; gap: 2px 16px; }
+    .nav a { letter-spacing: 2px; font-size: 11px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  .tagline .tiny { font-size: 0.42em; letter-spacing: 2px; vertical-align: middle; opacity: 0.75; margin-right: 0.6em; }
+  td.wrapit { white-space: normal; min-width: 300px; }
+  .said { display: block; margin-top: 10px; color: var(--fg); }
+  .said::before { content: "defakof: "; color: var(--badge); font-weight: 700; letter-spacing: 2px; }
+
+  /* Player bio cards */
+  .players { display: grid; gap: 24px; }
+  .player { display: grid; grid-template-columns: 240px minmax(0, 1fr); border: 1px solid var(--line); background: var(--panel-solid); }
+  .portrait { position: relative; min-height: 320px; overflow: hidden; border-right: 1px solid var(--line-soft);
+    background: radial-gradient(circle at 50% 30%, rgba(196,210,202,0.16), rgba(0,0,0,0) 65%), #060908;
+    display: grid; place-items: center; }
+  .portrait span { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--faint); text-align: center; padding: 12px; }
+  .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: saturate(0.85) blur(1px); opacity: 0.7; }
+  .portrait canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: pan-y; background: radial-gradient(circle at 50% 35%, #1c2420, #060908 70%); }
+  .portrait canvas:active { cursor: grabbing; }
+  .portrait .turn { position: absolute; left: 0; right: 0; bottom: 10px; padding: 0; font-size: 10px; pointer-events: none; }
+  .pbody { padding: 26px 28px; display: grid; gap: 22px; min-width: 0; }
+  .skin { position: absolute; inset: 0; display: grid; place-items: center; }
+  .skin-tabs { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 2; display: flex; gap: 6px; }
+  .skin-tabs button { flex: 1; font: 700 10px/1 var(--body); letter-spacing: 2px; text-transform: uppercase; padding: 8px 4px; cursor: pointer;
+    color: var(--muted); background: rgba(0,0,0,0.55); border: 1px solid var(--line-soft); }
+  .skin-tabs button:hover { color: var(--fg); border-color: var(--line); }
+  .skin-tabs button[aria-pressed="true"] { color: #000; background: var(--fg); border-color: var(--fg); }
+  .pname { font-family: var(--display); font-weight: 900; font-size: clamp(30px, 5vw, 46px); letter-spacing: 3px; line-height: 1; overflow-wrap: anywhere; }
+  .pbody > * { min-width: 0; }
+  .ticker { overflow: hidden; max-width: 100%; font-size: clamp(24px, 3.6vw, 36px); line-height: 1.25;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%); }
+  .ticker-track { display: inline-flex; white-space: nowrap; animation: ticker 34s linear infinite; }
+  .ticker-track span { padding-right: 0.5em; }
+  .ticker-track span::after { content: "/"; color: var(--badge); padding-left: 0.5em; }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
+  @keyframes ticker { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .ticker { overflow-x: auto; } .ticker-track { animation: none; } }
+  .respect { display: inline-flex; align-items: center; gap: 12px; margin-top: 6px; }
+  .respect button { font: 900 20px/1 var(--display); width: 44px; height: 44px; cursor: pointer; color: #000; background: var(--fg); border: 1px solid var(--fg); border-bottom-width: 4px; border-bottom-color: var(--moon); }
+  .respect button:active { transform: translateY(2px); border-bottom-width: 2px; }
+  .respect output { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .glitch { position: relative; display: inline-block; font-variant-ligatures: none; letter-spacing: 1px; animation: jitter 1.7s steps(1, end) infinite;
+    text-shadow: 2px 0 rgba(196,210,202,0.55), -2px 0 rgba(201,162,74,0.55); }
+  @keyframes jitter { 0%, 100% { transform: none; } 12% { transform: translateX(-3px) skewX(-8deg); } 14% { transform: none; } 61% { transform: translateX(4px) skewX(10deg); } 63% { transform: none; } 80% { transform: translateY(2px); opacity: 0.6; } 82% { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .glitch { animation: none; } }
+  .pmain { margin-top: 8px; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); }
+  .pstats { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line-soft); }
+  .pstats div { padding: 14px 16px; border-left: 1px solid var(--line-soft); min-width: 0; }
+  .pstats div:first-child { border-left: 0; }
+  .pstats b { display: block; font-family: var(--display); font-weight: 900; font-size: 22px; letter-spacing: 1px; text-transform: uppercase; }
+  .pstats small { display: block; margin-top: 4px; font-size: 13px; color: var(--faint); }
+  .bio { color: var(--muted); max-width: 62ch; }
+  .facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; border-top: 1px solid var(--line-soft); }
+  .facts div { display: flex; justify-content: space-between; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+  .facts dt { color: var(--muted); }
+  .facts dd { font-weight: 700; text-align: right; }
+
+  /* Ban record: a case file with one line blacked out */
+  .bans { display: grid; grid-template-columns: auto minmax(0, 1fr); border: 1px solid var(--line-soft); }
+  .bans > div { padding: 14px 18px; min-width: 0; }
+  .bans > div + div { border-left: 1px solid var(--line-soft); }
+  .bans-n { display: block; font-family: var(--display); font-weight: 900; font-size: 40px; line-height: 1.05; color: var(--badge); font-variant-numeric: tabular-nums; }
+  .bans-more { display: block; margin-top: 8px; font-size: 15px; color: var(--muted); }
+  .redact { position: relative; display: inline-block; padding: 1px 6px; white-space: nowrap; }
+  .redact::after { content: "Redacted"; position: absolute; inset: 0; display: grid; place-items: center;
+    background: var(--moon); color: #0a0d0c; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    animation: slip 11s steps(1, end) infinite; }
+  .redact:hover::after, .redact:focus::after { animation: none; opacity: 0; }
+  @keyframes slip { 0%, 100% { opacity: 1; } 91% { opacity: 0; } 92% { opacity: 1; } 93.5% { opacity: 0; } 95% { opacity: 1; } }
+  .aka { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+  .aka span { font-size: 13px; color: var(--moon); border: 1px solid var(--line-soft); padding: 4px 10px; overflow-wrap: anywhere; }
+  @media (max-width: 860px) {
+    .player { grid-template-columns: 1fr; }
+    .portrait { min-height: 0; aspect-ratio: 4 / 5; max-height: 460px; width: 100%; border-right: 0; border-bottom: 1px solid var(--line-soft); }
+    .pbody { padding: 20px 18px; }
+    .pstats { grid-template-columns: 1fr; }
+    .pstats div { border-left: 0; border-top: 1px solid var(--line-soft); }
+    .pstats div:first-child { border-top: 0; }
+    .facts { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { .redact::after { animation: none; } }
+  @media (max-width: 520px) { .bans { grid-template-columns: 1fr; } .bans > div + div { border-left: 0; border-top: 1px solid var(--line-soft); } }
+  .rant { display: grid; gap: 6px; margin-top: 14px; font-family: var(--display); font-weight: 900; line-height: 1.1; text-wrap: balance; }
+  .rant span { display: block; }
+  .rant .r1 { font-size: clamp(18px, 2.4vw, 24px); font-weight: 600; color: var(--muted); }
+  .rant .r2 { font-size: clamp(22px, 3.4vw, 36px); }
+  .rant .r3 { font-size: clamp(26px, 4.4vw, 50px); }
+  .rant .r4 { font-size: clamp(30px, 5.6vw, 68px); }
+  .rant .r5 { font-size: clamp(36px, 7.4vw, 96px); letter-spacing: 2px; color: var(--badge); }
+  .rant .r6 { font-size: clamp(15px, 1.8vw, 18px); font-weight: 400; color: var(--muted); margin-top: 10px; }
+  /* A claim that changes when you lean on it */
+  .secret { border-bottom: 1px dotted var(--badge); cursor: help; outline-offset: 3px; }
+  .secret::after { content: attr(data-claim); }
+  .secret:hover::after, .secret:focus::after { content: attr(data-truth); color: var(--badge); }
+  .plays { cursor: pointer; transition: color 0.2s; }
+  .plays.on { color: var(--badge); }
+  .plays.on::after { content: " \266A"; font-size: 0.6em; vertical-align: middle; animation: bob 0.5s ease-in-out infinite alternate; display: inline-block; }
+  @keyframes bob { to { transform: translateY(-5px) rotate(8deg); } }
+  @media (prefers-reduced-motion: reduce) { .plays.on::after { animation: none; } }
+  /* In memoriam: the one quiet, centred block on the page */
+  .memorial { display: grid; justify-items: center; gap: 18px; text-align: center; padding: 56px 24px 48px; border: 1px solid var(--line); background: var(--panel-solid); }
+  .candle { position: relative; width: 12px; height: 46px; margin-top: 26px; background: linear-gradient(#e9e4d6, #8f8a7c); }
+  .candle::before { content: ""; position: absolute; left: 50%; bottom: 100%; width: 14px; height: 24px; margin-left: -7px; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+    background: radial-gradient(ellipse at 50% 75%, #fff3c4 0%, var(--badge) 45%, rgba(201,162,74,0) 72%); transform-origin: 50% 100%; animation: flame 2.6s ease-in-out infinite; }
+  .candle::after { content: ""; position: absolute; left: 50%; bottom: 100%; width: 120px; height: 120px; margin: 0 0 -48px -60px; border-radius: 50%; background: radial-gradient(circle, rgba(201,162,74,0.16), rgba(201,162,74,0) 65%); pointer-events: none; }
+  @keyframes flame { 0%, 100% { transform: scale(1, 1) rotate(-2deg); opacity: 0.95; } 30% { transform: scale(0.92, 1.08) rotate(3deg); opacity: 0.8; } 55% { transform: scale(1.05, 0.94) rotate(-4deg); opacity: 1; } 80% { transform: scale(0.96, 1.04) rotate(2deg); opacity: 0.85; } }
+  @media (prefers-reduced-motion: reduce) { .candle::before { animation: none; } }
+  .gold-plate { position: relative; overflow: hidden; margin-top: -8px; padding: 12px 26px; max-width: 100%;
+    font-family: var(--display); font-weight: 900; font-size: clamp(14px, 2vw, 18px); letter-spacing: 3px; text-transform: uppercase; color: #2b1f05;
+    background: linear-gradient(135deg, #7a5c17 0%, #e2c36a 22%, #fff1b8 40%, #c9a24a 58%, #8a6a1e 82%, #e2c36a 100%);
+    border: 1px solid #f3dc92; box-shadow: inset 0 0 0 3px rgba(43,31,5,0.25), inset 0 1px 0 rgba(255,255,255,0.6), 0 6px 24px rgba(201,162,74,0.22);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.45); }
+  .gold-plate::after { content: ""; position: absolute; top: 0; bottom: 0; left: -40%; width: 30%; transform: skewX(-20deg);
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.55), rgba(255,255,255,0)); animation: shine 5s ease-in-out infinite; }
+  @keyframes shine { 0%, 70% { left: -40%; } 100% { left: 120%; } }
+  @media (prefers-reduced-motion: reduce) { .gold-plate::after { animation: none; } }
+  /* The duo wordmark. Only transform and opacity move, so it stays smooth. */
+  .duo { display: inline-flex; align-items: baseline; margin-block: -6px; padding: 10px 18px; cursor: pointer; background: none; border: 0;
+    font-family: var(--display); font-weight: 900; font-size: clamp(30px, 6vw, 60px); letter-spacing: 2px; line-height: 1.1; color: var(--fg); -webkit-tap-highlight-color: transparent; }
+  .duo > span { display: inline-block; will-change: transform, opacity; transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1); }
+  .duo .x { color: var(--badge); padding-inline: 0.05em; }
+  .duo .x b { display: inline-block; font-weight: inherit; will-change: transform, opacity; animation: pulse 2.2s ease-in-out infinite alternate; }
+  .duo .i { transform-origin: 0% 100%; }
+  .duo.broken .d { transform: translateX(-0.18em); }
+  .duo.broken .x { transform: translateY(0.08em) rotate(45deg) scale(0.72); opacity: 0.28; }
+  .duo.broken .x b { animation-play-state: paused; }
+  .duo.broken .i { transform: translate(0.5em, 0.62em) rotate(13deg); opacity: 0.14; transition-duration: 2.2s; }
+  #duo-note { transition: opacity 0.35s ease; min-height: 1.6em; }
+  #duo-note.swap { opacity: 0; }
+  @keyframes pulse { from { transform: scale(1); opacity: 0.75; } to { transform: scale(1.14); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .duo .x b { animation: none; } .duo > span { transition-duration: 0.01s; } }
+  .plinks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .plinks a { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; text-decoration: none; color: var(--fg); border: 1px solid var(--line); padding: 7px 12px; transition: background 0.15s, color 0.15s; }
+  .plinks a:hover { background: var(--fg); color: #000; }
+  .mem-name { font-family: var(--display); font-weight: 900; font-size: clamp(34px, 6.4vw, 68px); letter-spacing: 3px; line-height: 1; overflow-wrap: anywhere; }
+  .mem-line { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); max-width: 46em; }
+  .mem-text { max-width: 34em; color: var(--muted); text-wrap: pretty; }
+  .mem-epitaph { font-family: var(--display); font-weight: 900; font-size: clamp(22px, 3.6vw, 36px); letter-spacing: 5px; text-transform: uppercase; color: var(--moon); }
+  .mem-note { font-style: italic; font-size: 20px; color: var(--badge); }
+  .mem-note small { display: block; margin-top: 4px; font-size: 13px; font-style: normal; letter-spacing: 2px; color: var(--muted); }
+  .mem-last { margin-top: 10px; padding-top: 22px; border-top: 1px solid var(--line-soft); width: min(100%, 40em); font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: var(--faint); }
+  .player.mention { grid-template-columns: minmax(0, 1fr); }
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="Back to top">rizrp's biggest enemy</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#roster">Roster</a>
+      <a href="#code">Rules</a>
+      <a href="#hate">Hate</a>
+      <a href="#bugs">Bugs</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="hero-grid">
+      <div class="hero-in">
+        <h1 class="logo">rizrp's biggest enemy</h1>
+        <p class="tagline">Still somehow skinnier</p>
+        <p class="pitch">Fat, lazy and unemployed. We move like NPCs, on the nights we move at all. Our KDA is still higher than yours, and we still kill you.</p>
+        <div class="cta-row">
+          <a class="btn solid" href="#roster">See who killed you</a>
+          <a class="btn" href="#hate">Why you hate us</a>
+          <a class="btn" href="https://steamcommunity.com/groups/rizrpisgay" target="_blank" rel="noopener">Steam group ↗</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="hero-bg" role="img" aria-label="Collage: three hunters in a lobby, a Steam comment reading 'a group of cheater trio! 149 hr and 12 hrs sure buddy', and three men in bowler hats drinking milk"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="tally" aria-label="Team totals">
+      <div><b>Unknown</b><span class="label">Lifetime KDA</span></div>
+      <div><b>Unknown</b><span class="label">Current MMR</span></div>
+      <div><b>100+</b><span class="label">Banned Steam accounts</span></div>
+      <div><b>0</b><span class="label">Jobs held</span></div>
+    </div>
+  </div>
+
+  <section id="roster">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2>K/D kings</h2>
+          <p>The complete active roster. Yes, this is all five of them.</p>
+        </div>
+      </div>
+      <div class="players">
+        <!-- One <article class="player"> per hunter. Copy the whole block to add another. -->
+        <article class="player">
+          <div class="portrait">
+            <img src="protegee.webp" alt="The Protegee, defakof's main hunter skin" onerror="this.remove()">
+            <canvas id="hunter-view" data-model="PROTEGEE_GLB" aria-label="3D model of The Protegee. Drag to turn her." hidden></canvas>
+            <span class="turn" id="hunter-hint" hidden>Drag to turn</span>
+          </div>
+          <div class="pbody">
+            <div>
+              <h3 class="pname">defakof</h3>
+              <p class="pmain">Main: The Protegee · Mosin-Nagant, Spitzer</p>
+              <p class="plinks"><a href="https://steamcommunity.com/profiles/76561199846638070" target="_blank" rel="noopener">Steam ↗</a><a href="https://www.youtube.com/@defakof" target="_blank" rel="noopener">YouTube ↗</a></p>
+              <div class="aka" aria-label="Also known as">
+                <b class="label">Also known as</b>
+                <span>lesbian hunter</span>
+                <span>real shit no gay shit</span>
+                <span>fentlover123</span>
+                <span>i love porn i'll die for porn</span>
+                <span>shitplayer123</span>
+                <span>sixsevengay</span>
+                <span>stardoor</span>
+                <span>lolzteam.net///zelenka.guru</span>
+                <span>kazantip2008</span>
+              </div>
+            </div>
+            <div class="pstats">
+              <div><span class="label">Lifetime KDA</span><b>Unknown</b><small>Spread over too many accounts to add up.</small></div>
+              <div><span class="label">Lifetime kills</span><b>Unknown</b><small>Higher than yours.</small></div>
+              <div><span class="label">Current MMR</span><b>Unknown</b><small>Depends which account you ask.</small></div>
+            </div>
+            <div class="bans">
+              <div><span class="label">Banned Steam accounts</span><b class="bans-n">100+</b></div>
+              <div><span class="label">Other platforms</span><span class="bans-more"><span class="redact" tabindex="0">and 100 more on Xbox</span></span></div>
+            </div>
+            <p class="bio">Bisexual and unemployed. Twice the dating pool, exactly the same results. Started playing in 4th grade and has not logged off in any way that counts. Has never seen a woman in real life, or a man, so the bisexuality is still at the theory stage. He worked it out himself, purely from how much he loves shigaria and ppj. Both of them probably know it. Not sure. Moves like a scripted NPC and still out-frags your whole trio.</p>
+            <dl class="facts">
+              <div><dt>Occupation</dt><dd>None, ever</dd></div>
+              <div><dt>Playing since</dt><dd>4th grade</dd></div>
+              <div><dt>Orientation</dt><dd>Bisexual, self-diagnosed</dd></div>
+              <div><dt>Women seen in real life</dt><dd>0</dd></div>
+              <div><dt>Men seen in real life</dt><dd>Also 0</dd></div>
+              <div><dt>Dreams of</dt><dd>A trans cutie</dd></div>
+              <div><dt>Cardio</dt><dd>Declined</dd></div>
+              <div><dt>Movement</dt><dd>W key only</dd></div>
+              <div><dt>Hours in Hunt</dt><dd>Roughly 15,000</dd></div>
+              <div><dt>Hours outside</dt><dd>0</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="player">
+          <div class="portrait">
+            <img src="veteran.webp" alt="Jane Eddings (Veteran) hunter skin" onerror="this.remove()">
+            <canvas id="hunter-view-4" data-model="VETERAN_GLB" aria-label="3D model of Jane Eddings (Veteran). Drag to turn her." hidden></canvas>
+            <span class="turn" hidden>Drag to turn</span>
+          </div>
+          <div class="pbody">
+            <div>
+              <h3 class="pname ticker" aria-label="No main nickname. Known names: booshkinaTV, viva la defa, defa my bro, shitplayer67, simp, twitch.tv/madfaceplay, i see dead people, magicbullets29, sufferpurrity, emotear, ukrainian cowboy"><span class="ticker-track" aria-hidden="true"><span>booshkinaTV</span><span>viva la defa</span><span>defa my bro</span><span>shitplayer67</span><span>simp</span><span>twitch.tv/madfaceplay</span><span>i see dead people</span><span>magicbullets29</span><span>sufferpurrity</span><span>emotear</span><span>ukrainian cowboy</span><span>booshkinaTV</span><span>viva la defa</span><span>defa my bro</span><span>shitplayer67</span><span>simp</span><span>twitch.tv/madfaceplay</span><span>i see dead people</span><span>magicbullets29</span><span>sufferpurrity</span><span>emotear</span><span>ukrainian cowboy</span></span></h3>
+              <p class="pmain">Main: Jane Eddings (Veteran)</p>
+              <div class="aka" aria-label="Has answered to">
+                <b class="label">Has answered to</b>
+                <span>booshkinaTV</span>
+                <span>viva la defa</span>
+                <span>defa my bro</span>
+                <span>shitplayer67</span>
+                <span>simp</span>
+                <span>twitch.tv/madfaceplay</span>
+                <span>i see dead people</span>
+                <span>magicbullets29</span>
+                <span>sufferpurrity</span>
+                <span>emotear</span><span>ukrainian cowboy</span>
+              </div>
+            </div>
+            <div class="pstats">
+              <div><span class="label">Main nickname</span><b>None</b><small>Never had one. Never will.</small></div>
+              <div><span class="label">Known facts</span><b>0</b><small>We asked. He changed his name again.</small></div>
+              <div><span class="label">Lifetime KDA</span><b>Unknown</b><small>Split across more names than defa can recall.</small></div>
+            </div>
+            <div class="bans">
+              <div><span class="label">In loving memory</span><b class="bans-n" style="font-size:30px">system.cfg</b></div>
+              <div><span class="label">Press F to pay respects</span>
+                <span class="respect"><button type="button" id="respect-btn" aria-label="Pay respects to system.cfg">F</button><output id="respect-count" for="respect-btn">No respects paid yet</output></span></div>
+            </div>
+            <p class="bio">Nobody knows anything about him. No main nickname, no confirmed sightings. The voice, though, everyone knows: he yells shit over VoIP all match, in bad, bad English. He joins, he yells, he kills, he leaves under a different name. The only other thing on record is that he is still in mourning for system.cfg.</p>
+            <dl class="facts">
+              <div><dt>Real name</dt><dd>Unknown</dd></div>
+              <div><dt>Voice</dt><dd>Loud, in bad bad English</dd></div>
+              <div><dt>Known associates</dt><dd>defakof, "defa" to him</dd></div>
+              <div><dt>Last seen</dt><dd>Your death screen</dd></div>
+              <div><dt>Names used</dt><dd>11 that defa could remember</dd></div>
+              <div><dt>Grieving for</dt><dd>system.cfg</dd></div>
+              <div><dt>Hours in Hunt</dt><dd>Around 2,000</dd></div>
+              <div><dt>Hours per name</dt><dd>About 180</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="player">
+          <div class="portrait">
+            <img src="midnight.webp" alt="Midnight's Shadow hunter skin" onerror="this.remove()">
+            <canvas id="hunter-view-5" data-model="MIDNIGHT_GLB" aria-label="3D model of Midnight's Shadow. Drag to turn." hidden></canvas>
+            <span class="turn" hidden>Drag to turn</span>
+          </div>
+          <div class="pbody">
+            <div>
+              <h3 class="pname">Хан hUEIOglot</h3>
+              <p class="pmain">Main: Midnight's Shadow</p>
+              <p class="plinks"><a href="https://steamcommunity.com/id/faRRenik" target="_blank" rel="noopener">Steam ↗</a></p>
+              <div class="aka" aria-label="Also known as">
+                <b class="label">Also known as</b>
+                <span>ceokuni</span>
+                <span>slander</span>
+                <span>humalo</span>
+                <span>xore</span>
+              </div>
+            </div>
+            <div class="pstats">
+              <div><span class="label">MMR</span><b>6 stars</b><small>Barely. One bad night from five.</small></div>
+              <div><span class="label">Lifetime KDA</span><b>Positive</b><small>Barely. He checks it after every match.</small></div>
+              <div><span class="label">Porn watched</span><b>A lot</b><small>More than his kills in Hunt, and he keeps count.</small></div>
+            </div>
+            <p class="bio">Runs entirely on Hearts of Iron, Germany, Hitler, radiation, S.T.A.L.K.E.R. and Chernobyl, and will explain any of them to you whether or not somebody is shooting at the team. His brain runs on a 400 ms ping: by the time the callout lands, the fight has moved to another compound. His dream date is getting pegged, and he is strict about the rules: women only, trans women very welcome. He says that is also exactly why he enjoys a good shit so much, and he says it every single session. Fascinated by periods as well, and nobody has ever asked him to explain that twice. Has watched more porn than he has killed hunters, and he has killed a lot of hunters.</p>
+            <dl class="facts">
+              <div><dt>Favourite game</dt><dd>Hearts of Iron, not Hunt</dd></div>
+              <div><dt>Favourite place</dt><dd>The Zone</dd></div>
+              <div><dt>Favourite sound</dt><dd>A Geiger counter</dd></div>
+              <div><dt>Favourite country</dt><dd>Germany, every campaign</dd></div>
+              <div><dt>Holiday plans</dt><dd>Chernobyl, again</dd></div>
+              <div><dt>Porn vs kills</dt><dd>Porn, by a distance</dd></div>
+              <div><dt>Dream date</dt><dd>Pegged, by a woman only</dd></div>
+              <div><dt>Favourite room</dt><dd>The toilet, same reason</dd></div>
+              <div><dt>Brain ping</dt><dd>400 ms</dd></div>
+              <div><dt>Reacts to gunfire</dt><dd>Eventually</dd></div>
+              <div><dt>Specialist subject</dt><dd>Hitler, at length</dd></div>
+              <div><dt>Lecture length</dt><dd>One full match</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="player">
+          <div class="portrait">
+            <img src="killbuyer.webp" alt="The Kill Buyer hunter skin" onerror="this.remove()">
+            <canvas id="hunter-view-7" data-model="KILLBUYER_GLB" aria-label="3D model of the Kill Buyer. Drag to turn him." hidden></canvas>
+            <span class="turn" hidden>Drag to turn</span>
+          </div>
+          <div class="pbody">
+            <div>
+              <h3 class="pname">hx66</h3>
+              <p class="pmain">Main: Kill Buyer · Sparks</p>
+              <p class="plinks"><a href="https://steamcommunity.com/id/hxdoublesix" target="_blank" rel="noopener">Steam ↗</a></p>
+            </div>
+            <div class="pstats">
+              <div><span class="label">K/D while pushing</span><b>0.100</b><small>He pushes anyway. Every time.</small></div>
+              <div><span class="label">FACEIT</span><b>Level 10</b><small>None of it came with him.</small></div>
+              <div><span class="label">Game sense</span><b>0</b><small>Measured twice to be sure.</small></div>
+            </div>
+            <p class="bio">Shoot, no think. Level 10 on FACEIT and not one drop of game sense in Hunt, which he has played for three years and somehow only 700 hours. Pushes every fight with a single-shot Sparks and holds a 0.100 K/D doing it. In Clash he saves his best work for his own teammates and farms them without mercy.</p>
+            <dl class="facts">
+              <div><dt>Motto</dt><dd>Shoot, no think</dd></div>
+              <div><dt>Main weapon</dt><dd>Sparks</dd></div>
+              <div><dt>Years playing</dt><dd>3</dd></div>
+              <div><dt>Hours played</dt><dd>700</dd></div>
+              <div><dt>Hours per year</dt><dd>About 233</dd></div>
+              <div><dt>Plan before pushing</dt><dd>None</dd></div>
+              <div><dt>Clash victims</dt><dd>His own teammates</dd></div>
+              <div><dt>Shots per fight</dt><dd>One, then a reload</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="player">
+          <div class="portrait">
+            <img src="privateeye.webp" alt="Private Eye hunter skin" onerror="this.remove()">
+            <canvas id="hunter-view-6" data-model="PRIVATEEYE_GLB" aria-label="3D model of the Private Eye. Drag to turn him." hidden></canvas>
+            <span class="turn" hidden>Drag to turn</span>
+          </div>
+          <div class="pbody">
+            <div>
+              <h3 class="pname">dreamcore</h3>
+              <p class="pmain">Main: Private Eye</p>
+              <p class="plinks"><a href="https://steamcommunity.com/profiles/76561198203470282" target="_blank" rel="noopener">Steam ↗</a></p>
+              <div class="aka" aria-label="Also known as">
+                <b class="label">Also known as</b>
+                <span>bogdan jr.</span>
+              </div>
+            </div>
+            <div class="pstats">
+              <div><span class="label">KDA, prime era</span><b>1.33</b><small>He remembers it as higher.</small></div>
+              <div><span class="label">MMR, prime era</span><b>5 stars</b><small>The prime did not last.</small></div>
+              <div><span class="label">Hours in Hunt</span><b>1,000</b><small>Barely. He rounded up.</small></div>
+            </div>
+            <p class="bio">Bad ass. Peaked at a 1.33 KDA and five stars with barely 1,000 hours on the clock, and has been describing that peak ever since. Drops in when he feels like it. Still better than Хан.</p>
+            <dl class="facts">
+              <div><dt>Shows up</dt><dd>When he feels like it</dd></div>
+              <div><dt>Reputation</dt><dd>Bad ass</dd></div>
+              <div><dt>Prime era</dt><dd>Over</dd></div>
+              <div><dt>Peak</dt><dd>5 stars, 1.33 KDA</dd></div>
+              <div><dt>Compared to Хан</dt><dd>Still better</dd></div>
+              <div><dt>Second prime</dt><dd>Any day now</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="mentions" class="band">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2>Worth mentioning</h2>
+          <p>People we don't always play with, but have played with a lot.</p>
+        </div>
+      </div>
+      <div class="players">
+        <article class="player">
+          <div class="portrait">
+            <div class="skin" id="skin-killbuyer">
+              <img src="killbuyer.webp" alt="The Kill Buyer hunter skin" onerror="this.remove()">
+              <canvas id="hunter-view-2" data-model="KILLBUYER_GLB" aria-label="3D model of the Kill Buyer. Drag to turn him." hidden></canvas>
+              <span class="turn" hidden>Drag to turn</span>
+            </div>
+            <div class="skin" id="skin-redneck" hidden>
+              <img src="redneck.webp" alt="The Redneck hunter skin" onerror="this.remove()">
+              <canvas id="hunter-view-3" data-model="REDNECK_GLB" aria-label="3D model of the Redneck. Drag to turn him." hidden></canvas>
+              <span class="turn" hidden>Drag to turn</span>
+            </div>
+            <div class="skin-tabs" role="group" aria-label="Skin shown">
+              <button type="button" id="tab-killbuyer" data-skin="skin-killbuyer" aria-pressed="true">Kill Buyer</button>
+              <button type="button" id="tab-redneck" data-skin="skin-redneck" aria-pressed="false">Redneck</button>
+            </div>
+          </div>
+          <div class="pbody">
+            <div>
+              <h3 class="pname"><span class="glitch" id="glitch-name" role="img" aria-label="Name withheld">▓▒#░%█?▒▓</span></h3>
+              <p class="pmain">Main: Kill Buyer · Second: Redneck</p>
+              <div class="aka" aria-label="Also known as">
+                <b class="label">Also known as</b>
+                <span>womanizer</span>
+              </div>
+            </div>
+            <div class="pstats">
+              <div><span class="label">Name</span><b>Withheld</b><small>You already know who it is. You can't prove it.</small></div>
+              <div><span class="label">Lifetime KDA</span><b>Classified</b></div>
+              <div><span class="label">Women</span><b>Several</b><small>By his own count.</small></div>
+            </div>
+            <div class="bans">
+              <div><span class="label">Times unbanned</span><b class="bans-n" style="font-size:30px">Quite a lot</b></div>
+              <div><span class="label">Current status</span><span class="bans-more">Unbanned. Check again tomorrow.</span></div>
+            </div>
+            <p class="bio">Basically a womanizer. The only one on this page who has spoken to a woman, and he has not stopped mentioning it since. Gets banned, gets unbanned, and is back in the lobby before anyone finishes typing the report. Also the roster's leading blowjob critic. Every one gets a full spoken review over comms, usually while the rest of us are being shot at. Most get five stars. The bad ones he has never forgiven, and he remembers each of them by date.</p>
+            <dl class="facts">
+              <div><dt>Occupation</dt><dd>Womanizing</dd></div>
+              <div><dt>Identity</dt><dd>Classified</dd></div>
+              <div><dt>Women seen in real life</dt><dd>Too many to count</dd></div>
+              <div><dt>Appeals won</dt><dd>Quite a lot</dd></div>
+              <div><dt>Dress code</dt><dd>Overalls, no shirt, on off days</dd></div>
+              <div><dt>Movement</dt><dd>Towards women</dd></div>
+            </dl>
+          </div>
+        </article>
+        <article class="player mention">
+          <div class="pbody">
+            <div>
+              <h3 class="pname"><span id="vjik-name" class="plays" tabindex="0" role="button" aria-label="vjik. Hover or press to play his one song.">vjik</span></h3>
+              <p class="pmain">Brother of xore · Bound by blood</p>
+              <div class="aka" aria-label="Also known as">
+                <b class="label">Also known as</b>
+                <span>xore jr</span>
+              </div>
+            </div>
+            <div class="pstats">
+              <div><span class="label">Furthest kill</span><b>89 m</b><small>With <span class="secret" tabindex="0" role="note" aria-label="Romero slugs. Actually a Mosin-Nagant." data-claim="Romero slugs" data-truth="a Mosin-Nagant"></span>, he says.</small></div>
+              <div><span class="label">Opens Hunt</span><b>Monthly</b><small>To spectate his teammates. Not to play.</small></div>
+              <div><span class="label">Hours in Hunt</span><b>300</b><small>Most of them watching.</small></div>
+            </div>
+            <p class="bio">The younger brother of xore, which is the only reason anyone calls him xore jr. Opens Hunt once a month, and only to spectate his teammates. In 300 hours his furthest kill is 89 metres, which he swears he got with <span class="secret" tabindex="0" role="note" aria-label="Romero slugs. Actually a Mosin-Nagant." data-claim="Romero slugs" data-truth="a Mosin-Nagant"></span>. Gets bullied every single game, and never by the enemy. It is always his own team. He once put Hava Nagila on in voice chat, one time, and the team has since ruled that it is the only music he listens to.</p>
+            <div class="bans">
+              <div><span class="label">His entire playlist</span><b class="bans-n" style="font-size:30px">1 song</b></div>
+              <div><span class="label">Hava Nagila, on repeat</span>
+                <span class="bans-more" id="tune-note">Hover over his name to hear all of it</span></div>
+            </div>
+            <dl class="facts">
+              <div><dt>Role</dt><dd>Spectator</dd></div>
+              <div><dt>Big brother</dt><dd>Хан, a.k.a. xore</dd></div>
+              <div><dt>Why "xore jr"</dt><dd>Bound by blood</dd></div>
+              <div><dt>Sessions</dt><dd>One a month</dd></div>
+              <div><dt>Bullied</dt><dd>Every game</dd></div>
+              <div><dt>Bullied by</dt><dd>His own teammates</dd></div>
+              <div><dt>Furthest kill</dt><dd>89 m</dd></div>
+              <div><dt>Songs known</dt><dd>1</dd></div>
+              <div><dt>Times he played it</dt><dd>Once. Never forgiven.</dd></div>
+              <div><dt>Weapon, officially</dt><dd><span class="secret" tabindex="0" role="note" aria-label="Romero slugs. Actually a Mosin-Nagant." data-claim="Romero slugs" data-truth="a Mosin-Nagant"></span></dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="memoriam">
+    <div class="wrap">
+      <article class="memorial">
+        <div class="candle" aria-hidden="true"></div>
+        <p class="label">In memoriam</p>
+        <h2 class="mem-name" style="text-transform:none">Innerconflict</h2>
+        <p class="mem-line">Also known as</p>
+        <p class="gold-plate">The one and only bogdan ballsack</p>
+        <p class="mem-line">Top 80 on Bayou Ledger · Retired after the Whityyy incident</p>
+        <p class="mem-text">He was top 80 on the Bayou Ledger. Then came the Whityyy incident. He still got his last extraction: full bounty, clean exit, not a scratch on him. He said it was the best match of his life. The next morning the Crytek police were at the door.</p>
+        <p class="mem-text">They took his account. They never took defa's, which was the cruel part. Defa told them, more than once, and they never listened.</p>
+        <p class="mem-text">The duo died with him. Everyone is sorry for defa's loss. Defa has been told so many times, and it has not helped. He still readies up and waits a few seconds before remembering.</p>
+        <p class="mem-epitaph">Gone and forgotten</p>
+        <p class="mem-line">R.I.P.</p>
+        <button type="button" class="duo" id="duo-btn" aria-label="defaXinner duo. Press to see what is left of it."><span class="d">defa</span><span class="x" aria-hidden="true"><b>X</b></span><span class="i">inner</span></button>
+        <p class="mem-line" id="duo-note" aria-live="polite">The duo. Click it.</p>
+        <p class="mem-note">ily &lt;3<small>p.s. defakof</small></p>
+        <p class="mem-last">We will meet in a better world</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="statement">
+    <div class="wrap">
+      <p class="label">Official statement</p>
+      <p class="rant">
+        <span class="r1">Oh, we're SO not a clan.</span>
+        <span class="r2">WE are NOT a CLAN.</span>
+        <span class="r3">JUST a FRIEND GROUP.</span>
+        <span class="r4">NOT a clan.</span>
+        <span class="r5">NOT A CLAN, OKAY?</span>
+        <span class="r6">Like nx. Not a clan. Clearly not a clan.</span>
+      </p>
+    </div>
+  </section>
+
+  <section id="code" class="band">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2>House rules</h2>
+          <p>Six things everyone in the friend group has in common.</p>
+        </div>
+      </div>
+      <div class="code">
+        <article><h3>Cheaters, hackers, exploiters only</h3><p>Clean players are not welcome. If you got to six stars on aim alone, we don't trust you and neither does anyone you killed.</p></article>
+        <article><h3>KD savers only</h3><p>A death only counts if the game saw it happen. Losing the hunter is fine. Losing the ratio is not.</p></article>
+        <article><h3>No movement</h3><p>We walk in straight lines like the AI hunters. No strafing, no jumping, and sprint is a rumour. You will still lose the fight.</p></article>
+        <article><h3>No jobs</h3><p>Nobody reaches 8,000 hours around a work schedule. Getting hired is grounds for removal from the roster.</p></article>
+        <article><h3>No cardio</h3><p>The only thing we carry is extra weight. The hunter does the running, and we resent even that.</p></article>
+        <article><h3>Still better than you</h3><p>Fat, lazy, unemployed and standing still, with a higher KDA than yours. Sit with that for a minute.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="hate">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2>Why you hate us</h2>
+          <p>Real complaints about high-MMR players, collected from the Steam forums. defakof replies underneath.</p>
+        </div>
+      </div>
+      <div class="code">
+        <article><h3>"They de-rank"</h3><p>Posters accuse six-stars of tanking their MMR, or queueing with a two-star friend, to farm easier lobbies.<span class="said">We call it community outreach.</span></p></article>
+        <article><h3>"They farm KD in towers"</h3><p>One thread wants players who sit in a tower with a scope for 30 minutes moved into their own league.<span class="said">We aren't camping. We can't get back down.</span></p></article>
+        <article><h3>"They Alt+F4"</h3><p>Players keep asking Crytek to count a mid-fight quit as a death, because they say it currently doesn't touch your KD.<span class="said">See house rule two.</span></p></article>
+        <article><h3>"Same guns every match"</h3><p>Mosin with Spitzer, Avtomat, Dolch. Six-star lobbies get called tedious, with no variation for years.<span class="said">Picking a new loadout sounds like effort.</span></p></article>
+        <article><h3>"They're all cheating"</h3><p>One poster puts it at 30% of all players. Another says you only meet cheaters in six-star lobbies.<span class="said">Correct. Next question.</span></p></article>
+        <article><h3>"Their ping"</h3><p>There are years of region-lock threads about players joining far-away servers and winning every peek.<span class="said">Our ping is fine. It's our reactions that lag.</span></p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="bugs" class="band">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2>Bug museum</h2>
+          <p>A small memorial to the bugs we abused every night until Crytek took them away. Nobody needs to know these any more. We just miss them.</p>
+        </div>
+      </div>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>Exhibit</th><th>What it did</th><th>Fixed in</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Old ladder bug<br><small style="color:var(--muted);font-weight:400">"The office window"</small></td><td class="wrapit">Hang on a ladder the right way and you could see straight through the wall. We spent more hours on that ladder than inside any compound.</td><td>Some time after 1.8</td><td><span class="res won">Dearly missed</span></td></tr>
+            <tr><td>Derendering<br><small style="color:var(--muted);font-weight:400">"Now you see it"</small></td><td class="wrapit">Past a hundred metres or so, bushes, walls and whole buildings stopped being drawn. Hunters did not. Every scope was a wallhack and nobody had to install anything.</td><td>Never fully</td><td><span class="res won">Still argued about</span></td></tr>
+            <tr><td>The clean config<br><small style="color:var(--muted);font-weight:400">"Car park mode"</small></td><td class="wrapit">A config file with no shadows, no trees and no grass. The bayou looked like an empty car park, and you were standing in the middle of it.</td><td>Never really</td><td><span style="font-family:var(--display);font-weight:900;font-size:26px;color:var(--badge);letter-spacing:2px" role="img" aria-label="Smiley face">:)</span></td></tr>
+            <tr><td>NPI<br><small style="color:var(--muted);font-weight:400">"The gardener"</small></td><td class="wrapit">Nvidia Profile Inspector settings that made bushes and trees disappear. Crytek later built logging for it, counted 1,009 players and handed out sanctions. No comment.</td><td>Fair Play Task Force</td><td><span class="res dead">Sanctioned</span></td></tr>
+            <tr><td>Shoulder peek<br><small style="color:var(--muted);font-weight:400">"Left side, best side"</small></td><td class="wrapit">Peek round the correct side of cover and your camera cleared the corner before your body did. Argued about for years. In 2022 a developer told USA Today it needed "a bit of work underneath" to clean up.</td><td>Promised in 2022</td><td><span class="res won">Still argued about</span></td></tr>
+            <tr><td>The LeMat incident</td><td class="wrapit">Every compact round left the LeMat at once, like a shotgun blast that killed at any range. The Fanning trait made it funnier.</td><td>Update 2.4.0.2</td><td><span class="res won">Dearly missed</span></td></tr>
+            <tr><td>The Avtomat that never shut up</td><td class="wrapit">The Avtomat's firing sound kept looping long after the magazine was empty. The whole server heard us, which was the point.</td><td>Not recorded</td><td><span class="res won">Dearly missed</span></td></tr>
+            <tr><td>The reload bug</td><td class="wrapit">Reloads that did not finish, or finished and did not count. Big enough that Crytek wrote a public update about it.</td><td>Reportedly 1.12</td><td><span class="res ext">Patched</span></td></tr>
+            <tr><td>Mid-ladder multitasking</td><td class="wrapit">Broke the climbing animation, so a hunter could use equipment halfway up a ladder.</td><td>Update 1.8, Hotfix 2</td><td><span class="res ext">Patched</span></td></tr>
+            <tr><td>Under the prison</td><td class="wrapit">The window shutters at Prison pushed players below the map.</td><td>Update 1.5.2</td><td><span class="res ext">Patched</span></td></tr>
+            <tr><td>Beetle reload</td><td class="wrapit">Throw a Beetle into a small space, go into Dark Sight, and the gun reloaded itself instantly.</td><td>Update 2.2</td><td><span class="res ext">Patched</span></td></tr>
+            <tr><td>Ammo-swap machine gun</td><td class="wrapit">Switching ammo types let a hunter fire several shots without reloading.</td><td>Update 2.4</td><td><span class="res ext">Patched</span></td></tr>
+            <tr><td>New ladder bug</td><td class="wrapit">Let a hunter use the top of a ladder from the bottom and skip the climb.</td><td>2.8, then again in 2.9</td><td><span class="res ext">Patched twice</span></td></tr>
+            <tr><td>Infinite Dark Sight</td><td class="wrapit">Dark Sight that never ran out, under specific circumstances.</td><td>Update 2.9.1</td><td><span class="res ext">Patched</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="foot">Also mourned: the infinite custom ammo glitch, which forum posters say died in the same fix as the old ladder bug.</p>
+    </div>
+  </section>
+
+  <section id="notbugs">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2>Not bugs</h2>
+          <p>These were how the game was meant to work. Crytek removed them anyway, and we are still not over it.</p>
+        </div>
+      </div>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>Feature</th><th>What it was</th><th>Removed in</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>No bullet drop</td><td class="wrapit">Bullets flew dead straight to the horizon. Aim at the head, hit the head, at any distance. Then somebody decided gravity should exist.</td><td>Hunt 1896</td><td><span class="res won">Dearly missed</span></td></tr>
+            <tr><td>Headshots that didn't kill</td><td class="wrapit">Past a certain range a headshot only hurt. We walked away from a lot of shots that should have ended us.</td><td>Not recorded</td><td><span class="res won">Dearly missed</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 rizrp's biggest enemy. Still somehow skinnier.</span>
+    <a href="https://steamcommunity.com/groups/rizrpisgay" target="_blank" rel="noopener" style="color:inherit">Steam group ↗</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/meshopt_decoder.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="protegee-model.js"></script>
+<script src="redneck-model.js"></script>
+<script src="killbuyer-model.js"></script>
+<script src="veteran-model.js"></script>
+<script src="midnight-model.js"></script>
+<script src="privateeye-model.js"></script>
+<script>
+  // 3D hunter in the portrait slot. If anything fails, the still image underneath stays.
+  function mountHunter(canvas) {
+    var data = window[canvas.dataset.model];
+    if (!window.THREE || !THREE.GLTFLoader || !data) return;
+    var renderer;
+    try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); } catch (e) { return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(30, 1, 0.05, 100);
+    scene.add(new THREE.HemisphereLight(0xdfe9e3, 0x1a1410, 1.15));
+    var key = new THREE.DirectionalLight(0xfff1dc, 1.5); key.position.set(2, 3, 4); scene.add(key);
+    var rim = new THREE.DirectionalLight(0x9fc0b4, 0.9); rim.position.set(-3, 2, -3); scene.add(rim);
+
+    var controls = new THREE.OrbitControls(camera, canvas);
+    controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true;
+    controls.minPolarAngle = controls.maxPolarAngle = Math.PI / 2 - 0.08;
+    var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    controls.autoRotate = !still; controls.autoRotateSpeed = 1.2;
+
+    var mixer = null, clock = new THREE.Clock(), ready = false;
+    var fit = null; // { tall, wide } of the posed skeleton
+    function resize() {
+      var w = canvas.clientWidth, h = canvas.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+      if (!fit) return;
+      var t = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+      var dist = Math.max(fit.tall * 0.6 / t, fit.wide * 0.6 / (t * camera.aspect));
+      var dir = camera.position.clone().sub(controls.target);
+      if (dir.lengthSq() < 1e-6) dir.set(0.2, 0, 1);
+      camera.position.copy(controls.target).add(dir.setLength(dist));
+    }
+    // Only draw while the canvas is on screen: there are several of these on the page.
+    var visible = true;
+    if (window.IntersectionObserver) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { rootMargin: "200px" }).observe(canvas);
+    function frame() {
+      if (visible) {
+        var dt = Math.min(clock.getDelta(), 0.1);
+        if (mixer && !still) mixer.update(dt);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      requestAnimationFrame(frame);
+    }
+    var loader = new THREE.GLTFLoader();
+    if (window.MeshoptDecoder) loader.setMeshoptDecoder(MeshoptDecoder);
+    var raw = atob(data), bytes = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    loader.parse(bytes.buffer, "", function (gltf) {
+      var model = gltf.scene;
+      scene.add(model);
+      model.traverse(function (o) { if (o.isMesh) o.frustumCulled = false; });
+      if (gltf.animations && gltf.animations.length) {
+        mixer = new THREE.AnimationMixer(model);
+        mixer.clipAction(gltf.animations[0]).play();
+        mixer.update(0);
+      }
+      model.updateMatrixWorld(true);
+      // Measure the posed skeleton, not the compressed mesh, whose raw bounds are unreliable.
+      var box = new THREE.Box3(), v = new THREE.Vector3(), bones = 0;
+      model.traverse(function (o) { if (o.isBone) { box.expandByPoint(o.getWorldPosition(v)); bones++; } });
+      if (!bones) box.setFromObject(model);
+      var size = box.getSize(new THREE.Vector3()), mid = box.getCenter(new THREE.Vector3());
+      fit = { tall: Math.max(size.y, 0.2) * 1.12, wide: Math.max(size.x, size.z, 0.2) * 1.25 };
+      controls.target.copy(mid);
+      camera.position.set(mid.x + 0.2, mid.y, mid.z + 1);
+      canvas.hidden = false;
+      var hint = canvas.parentNode.querySelector(".turn"); if (hint) hint.hidden = false;
+      resize();
+      window.addEventListener("resize", resize);
+      if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
+      if (!ready) { ready = true; frame(); }
+    }, function () { /* keep the still image */ });
+  }
+  document.querySelectorAll("canvas[data-model]").forEach(mountHunter);
+
+  // His one song, a public-domain recording, looping while his name is hovered.
+  (function () {
+    var name = document.getElementById("vjik-name"), note = document.getElementById("tune-note");
+    if (!name) return;
+    var audio = new Audio("hava-nagila.mp3");
+    audio.loop = true; audio.preload = "none"; audio.volume = 0.6;
+    var idle = note.textContent;
+    function start() {
+      var pr = audio.play();
+      name.classList.add("on"); note.textContent = "Playing. It does not stop.";
+      if (pr && pr.catch) pr.catch(function () {
+        // Browsers refuse sound until the visitor has clicked something on the page.
+        name.classList.remove("on"); note.textContent = "Click his name once, then hover works";
+      });
+    }
+    function stop() { audio.pause(); name.classList.remove("on"); note.textContent = idle; }
+    name.addEventListener("mouseenter", start);
+    name.addEventListener("mouseleave", stop);
+    name.addEventListener("blur", stop);
+    name.addEventListener("click", function () { if (audio.paused) start(); else stop(); });
+    name.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (audio.paused) start(); else stop(); } });
+  })();
+
+  // The duo: click to break it apart, click again to pretend.
+  (function () {
+    var btn = document.getElementById("duo-btn"), note = document.getElementById("duo-note"), n = 0;
+    if (!btn) return;
+    var gone = [
+      "And then there was one.",
+      "Inner has left the lobby.",
+      "Defa is queueing solo.",
+      "The second slot stays empty.",
+      "Defa still says \"we\" out of habit.",
+      "Nobody calls the bounty now.",
+      "His loadout is still saved.",
+      "Defa types \"gg\" to nobody.",
+      "Still gone."
+    ];
+    var back = [
+      "For a second it was like old times.",
+      "This is not real. You are just clicking.",
+      "Defa heard the invite sound. It was nothing.",
+      "You can put the letters back. Only the letters.",
+      "It was a good duo. It was the only duo.",
+      "He isn't coming back.",
+      "Stop it. Please."
+    ];
+    var timer = null;
+    btn.addEventListener("click", function () {
+      var broken = btn.classList.toggle("broken");
+      var list = broken ? gone : back;
+      var line = list[Math.min(Math.floor(n / 2), list.length - 1)];
+      n++;
+      note.classList.add("swap");
+      clearTimeout(timer);
+      timer = setTimeout(function () { note.textContent = line; note.classList.remove("swap"); }, 350);
+    });
+  })();
+
+  // Press F to pay respects. Counts this visit only.
+  (function () {
+    var btn = document.getElementById("respect-btn"), out = document.getElementById("respect-count"), n = 0;
+    if (!btn) return;
+    function pay() { n++; out.textContent = n + (n === 1 ? " respect paid" : " respects paid"); }
+    btn.addEventListener("click", pay);
+    document.addEventListener("keydown", function (e) {
+      var t = e.target && e.target.tagName;
+      if ((e.key === "f" || e.key === "F") && !e.ctrlKey && !e.metaKey && !e.altKey && t !== "INPUT" && t !== "TEXTAREA") pay();
+    });
+  })();
+
+  // Skin switcher on a portrait with more than one hunter.
+  document.querySelectorAll(".skin-tabs button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      b.parentNode.querySelectorAll("button").forEach(function (o) {
+        o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        document.getElementById(o.dataset.skin).hidden = o !== b;
+      });
+    });
+  });
+
+  // The second player's name is never shown: the letters reshuffle forever.
+  (function () {
+    var el = document.getElementById("glitch-name");
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var glyphs = "█▓▒░#@%&$?!/\\<>=+*01xX";
+    setInterval(function () {
+      var out = "";
+      for (var i = 0; i < 9; i++) out += glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+      el.textContent = out;
+    }, 90);
+  })();
+</script>
+
+</body>
+</html>
