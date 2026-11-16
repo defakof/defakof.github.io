@@ -367,6 +367,17 @@
   .faq dt { font-weight: 700; letter-spacing: 0.5px; }
   .faq dd { color: var(--muted); }
   @media (max-width: 700px) { .faq > div { grid-template-columns: 1fr; } }
+  .news { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+  .news-text { display: grid; gap: 14px; min-width: 0; }
+  .news-text > p:not(.label) { color: var(--muted); max-width: 60ch; }
+  .news-text .facts { margin-top: 8px; }
+  .live { display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--loss); animation: blink 1.4s ease-in-out infinite; }
+  @keyframes blink { 50% { opacity: 0.2; } }
+  @media (prefers-reduced-motion: reduce) { .live { animation: none; } }
+  .news-shot { margin: 0; min-width: 0; transform: rotate(1.2deg); }
+  .news-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); box-shadow: 0 18px 50px rgba(0,0,0,0.6); }
+  .news-shot figcaption { margin-top: 12px; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--faint); text-align: right; }
+  @media (max-width: 860px) { .news { grid-template-columns: 1fr; gap: 26px; } .news-shot { transform: none; } }
   .mem-name { font-family: var(--display); font-weight: 900; font-size: clamp(34px, 6.4vw, 68px); letter-spacing: 3px; line-height: 1; overflow-wrap: anywhere; }
   .mem-line { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); max-width: 46em; }
   .mem-text { max-width: 34em; color: var(--muted); text-wrap: pretty; }
@@ -401,7 +412,7 @@
         <div class="cta-row">
           <a class="btn solid" href="#roster">See who killed you</a>
           <a class="btn" href="#hate">Why you hate us</a>
-          <a class="btn" href="https://steamcommunity.com/groups/rizrpisgay" target="_blank" rel="noopener">Steam group ↗</a>
+          <a class="btn" href="#news">Steam group: R.I.P.</a>
         </div>
       </div>
       <div class="hero-art">
@@ -418,6 +429,30 @@
       <div><b>0</b><span class="label">Jobs held</span></div>
     </div>
   </div>
+
+  <section id="news" class="band">
+    <div class="wrap">
+      <div class="news">
+        <div class="news-text">
+          <p class="label"><span class="live" aria-hidden="true"></span>Breaking news · November 2026</p>
+          <h2>Steam group dies of natural causes</h2>
+          <p>Our Steam group has been removed "for violating the Steam Community Rules and Guidelines". By pure coincidence, this happened right after the entire [nx] clan found the report button.</p>
+          <p>We picture it fondly: a whole clan, one evening, one voice channel, taking turns to report a group belonging to people who are not even a clan. That is teamwork. We have never managed that kind of coordination in an actual match.</p>
+          <p>Rent in their heads remains free, and we are not planning to move out. A new group will go up soon. We look forward to seeing it reported as well.</p>
+          <dl class="facts">
+            <div><dt>Cause of death</dt><dd>Mass report</dd></div>
+            <div><dt>Suspects</dt><dd>[nx], all of them</dd></div>
+            <div><dt>Rent paid in their heads</dt><dd>0</dd></div>
+            <div><dt>Are we upset</dt><dd>lol</dd></div>
+          </dl>
+        </div>
+        <figure class="news-shot">
+          <img src="group-removed.png" alt="Steam error page: This group has been removed for violating the Steam Community Rules and Guidelines." loading="lazy">
+          <figcaption>Exhibit A. Somebody was very busy.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
 
   <section id="roster">
     <div class="wrap">
@@ -880,7 +915,7 @@
 <footer>
   <div class="wrap">
     <span>© 2026 rizrp's biggest enemy. Still somehow skinnier.</span>
-    <a href="https://steamcommunity.com/groups/rizrpisgay" target="_blank" rel="noopener" style="color:inherit">Steam group ↗</a>
+    <a href="#news" style="color:inherit">Steam group: removed</a>
   </div>
 </footer>
 
