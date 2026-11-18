@@ -378,6 +378,12 @@
   .news-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); box-shadow: 0 18px 50px rgba(0,0,0,0.6); }
   .news-shot figcaption { margin-top: 12px; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--faint); text-align: right; }
   @media (max-width: 860px) { .news { grid-template-columns: 1fr; gap: 26px; } .news-shot { transform: none; } }
+  /* Animated background behind a player's text. Plays only when the file exists. */
+  .player.has-bg .pbody { position: relative; overflow: hidden; isolation: isolate; }
+  .card-bg { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; filter: grayscale(0.4) contrast(1.1); pointer-events: none; }
+  .player.has-bg .pbody::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: linear-gradient(90deg, rgba(10,13,12,0.92) 0%, rgba(10,13,12,0.72) 55%, rgba(10,13,12,0.5) 100%); }
+  @media (prefers-reduced-motion: reduce) { .card-bg { display: none; } }
   .mem-name { font-family: var(--display); font-weight: 900; font-size: clamp(34px, 6.4vw, 68px); letter-spacing: 3px; line-height: 1; overflow-wrap: anywhere; }
   .mem-line { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); max-width: 46em; }
   .mem-text { max-width: 34em; color: var(--muted); text-wrap: pretty; }
@@ -464,13 +470,14 @@
       </div>
       <div class="players">
         <!-- One <article class="player"> per hunter. Copy the whole block to add another. -->
-        <article class="player">
+        <article class="player has-bg" id="p-defakof">
           <div class="portrait">
             <img src="protegee.webp" alt="The Protegee, defakof's main hunter skin" onerror="this.remove()">
             <canvas id="hunter-view" data-model="PROTEGEE_GLB" aria-label="3D model of The Protegee. Drag to turn her." hidden></canvas>
             <span class="turn" id="hunter-hint" hidden>Drag to turn</span>
           </div>
           <div class="pbody">
+            <video class="card-bg" src="defakof-bg.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true" onerror="this.remove()"></video>
             <div>
               <h3 class="pname">defakof</h3>
               <p class="pmain">Main: The Protegee · Mosin-Nagant, Spitzer</p>
